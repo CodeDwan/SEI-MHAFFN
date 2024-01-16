@@ -20,15 +20,13 @@ device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
 # device = "cpu"
 
 class AFF(nn.Module):
-    '''
-    多特征融合 AFF
-    '''
+
 
     def __init__(self, channels=16, r=4):
         super(AFF, self).__init__()
         inter_channels = int(channels // r)
 
-        # 局部注意力
+
         self.local_att = nn.Sequential(
             nn.Conv1d(channels, inter_channels, kernel_size=1, stride=1, padding=0),
             nn.BatchNorm1d(inter_channels),
@@ -37,7 +35,6 @@ class AFF(nn.Module):
             nn.BatchNorm1d(channels),
         )
 
-        # 全剧注意力
         self.global_att = nn.Sequential(
             nn.AdaptiveAvgPool1d(1),
             nn.Conv1d(channels, inter_channels, kernel_size=1, stride=1, padding=0),
@@ -47,8 +44,6 @@ class AFF(nn.Module):
             nn.BatchNorm1d(channels),
         )
 
-
-        # 第二次本地注意力
         self.local_att2 = nn.Sequential(
             nn.Conv1d(channels, inter_channels, kernel_size=1, stride=1, padding=0),
             nn.BatchNorm1d(inter_channels),
@@ -56,7 +51,7 @@ class AFF(nn.Module):
             nn.Conv1d(inter_channels, channels, kernel_size=1, stride=1, padding=0),
             nn.BatchNorm1d(channels),
         )
-        # 第二次全局注意力
+
         self.global_att2 = nn.Sequential(
             nn.AdaptiveAvgPool1d(1),
             nn.Conv1d(channels, inter_channels, kernel_size=1, stride=1, padding=0),
@@ -162,19 +157,19 @@ class multi_CNN(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=(1, 4)),
         )
-        # rx_data_a的卷积结果
+
         self.fc_a = nn.Sequential(
             nn.LazyLinear(256*self.linearchannel),
             nn.ReLU(),
             nn.Dropout(p=0.3),
         )
-        # rx_decp_data_b的卷积结果
+
         self.fc_b = nn.Sequential(
             nn.LazyLinear(256*self.linearchannel),
             nn.ReLU(),
             nn.Dropout(p=0.3),
         )
-        # rx_equre_data_c的卷积结果
+
         self.fc_c = nn.Sequential(
             nn.LazyLinear(256*self.linearchannel),
             nn.ReLU(),
@@ -204,28 +199,28 @@ class multi_CNN(nn.Module):
     def forward(self, input_a, input_b, input_c):
         AttentionFF = AFF()
         AttentionFF.to(device)
-        # 提取rx_data特征
+
         x_a = self.conv1d_a1(input_a)
         x_a = self.conv1d_a2(x_a)
         x_a = self.conv1d_a3(x_a)
         x_a = self.conv1d_a4(x_a)
         x_a = x_a.view(x_a.shape[0], -1)
         x_a = self.fc_a(x_a)
-        # 提取rx_decp_data特征
+
         x_b = self.conv2d_b1(input_b)
         x_b = self.conv2d_b2(x_b)
         x_b = self.conv2d_b3(x_b)
         x_b = self.conv2d_b4(x_b)
         x_b = x_b.view(x_b.shape[0], -1)
         x_b = self.fc_b(x_b)
-        # 提取rx_equfre_data特征
+   
         x_c = self.conv2d_c1(input_c)
         x_c = self.conv2d_c2(x_c)
         x_c = self.conv2d_c3(x_c)
         x_c = self.conv2d_c4(x_c)
         x_c = x_c.view(x_c.shape[0], -1)
         x_c = self.fc_c(x_c)
-        #拼接
+
         # x = torch.cat([x_a, x_b, x_c], 1)
         x_a = x_a.reshape([x_a.shape[0], self.linearchannel, -1])
         x_b = x_b.reshape([x_b.shape[0], self.linearchannel, -1])
@@ -236,7 +231,7 @@ class multi_CNN(nn.Module):
         x0 = self.fc2(x)
         x = self.fc3(x0)
 
-        # 特征输出
+
         self.x0 = x0
         return x
 
@@ -254,9 +249,9 @@ def train_one_epoch(model, optimizer, loss_fn, training_loader, report_n):
     # index and do some intra-epoch reporting
     for i, (x_a, x_b, x_c, y) in enumerate(training_loader):
         # Every data instance is an input + label pair
-        input_a, input_b, input_c, labels = x_a, x_b, x_c, y     #xb:32x2x30720, yb:32x10
-        labels = labels.long().view(-1)     #转换为维度为1的long类型
-        # 使用GPU进行训练
+        input_a, input_b, input_c, labels = x_a, x_b, x_c, y    
+        labels = labels.long().view(-1)  
+
         input_a = input_a.to(device)
         input_b = input_b.to(device)
         input_c = input_c.to(device)
@@ -297,12 +292,12 @@ if __name__ == "__main__":
     EPOCHS = 500
     numclass = 14
     init_lr = 1e-4
-    data_file_a = "../Datasets/XSRPdata/XSRPdata_PARA/rx_data_a_14.mat"  # 数据路径
-    data_file_b = "../Datasets/XSRPdata/XSRPdata_PARA/rx_decp_data_b_14.mat"  # 数据路径
-    data_file_c = "../Datasets/XSRPdata/XSRPdata_PARA/rx_equfre_data_c_14.mat"  # 数据路径
-    model_path = './Modelsave/MHAFFN.pth'  # 模型保存path
-    pic_path = './Modelsave/figure/MHAFFN.jpg' # 图片保存路径
-    tsne_path = './Modelsave/figure/MHAFFN_tsne.jpg'
+    data_file_a = "../Datasets/...mat"  
+    data_file_b = "../Datasets/...mat"  
+    data_file_c = "../Datasets/...mat"  
+    model_path = './Modelsave/...pth'  
+    pic_path = './Modelsave/figure/...jpg' 
+    tsne_path = './Modelsave/figure/...jpg'
 
 
     # 数据处理，导入，打包
