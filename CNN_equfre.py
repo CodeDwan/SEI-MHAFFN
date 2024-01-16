@@ -48,7 +48,6 @@ class CNN(nn.Module):
             nn.MaxPool2d(kernel_size=(1, 4)),
         )
 
-        # rx_equfre_data_a的卷积结果
         self.fc_a = nn.Sequential(
             nn.LazyLinear(256),
             nn.ReLU(),
@@ -72,7 +71,7 @@ class CNN(nn.Module):
         )
 
     def forward(self, input_a, input_b, input_c):
-        # 提取rx_equfre_data_a特征
+
         x_a = self.conv2d_a1(input_a)
         x_a = self.conv2d_a2(x_a)
         x_a = self.conv2d_a3(x_a)
@@ -104,7 +103,7 @@ def train_one_epoch(model, optimizer, loss_fn, training_loader, report_n):
     # index and do some intra-epoch reporting
     for i, (x_a, x_b, x_c, y) in enumerate(training_loader):
         # Every data instance is an input + label pair
-        input_a, input_b, input_c, labels = x_a, x_b, x_c, y     #xb:32x2x30720, yb:32x10
+        input_a, input_b, input_c, labels = x_a, x_b, x_c, y   
         labels = labels.long().view(-1)     #转换为维度为1的long类型
         # 使用GPU进行训练
         input_a = input_a.to(device)
@@ -141,12 +140,11 @@ def train_one_epoch(model, optimizer, loss_fn, training_loader, report_n):
 if __name__ == "__main__":
     # path settings + parameter settings
 
-    data_file_c = "../Datasets/XSRPdata/XSRPdata_PARA/rx_equfre_data_c_14.mat"  # 数据路径
-    model_path = './Modelsave/CNN_equfre.pth'  # 模型保存path
-    pic_path = './Modelsave/figure/CNN_equfre.jpg' # 图片保存路径
-    tsne_path = './Modelsave/figure/CNN_equfre_tsne.jpg'
+    data_file_c = "../Datasets/...mat"  # 数据路径
+    model_path = './Modelsave/...pth'  # 模型保存path
+    pic_path = './Modelsave/figure/...jpg' # 图片保存路径
+    tsne_path = './Modelsave/figure/...jpg'
     bsize = 32     # batch_size
-    # report_n = 4000*0.8*0.8/bsize/5     # 训练x个batch后汇报一次
     report_n = 30
     EPOCHS = 200
     numclass = 14
@@ -156,7 +154,6 @@ if __name__ == "__main__":
     print('----------------Start Data Processing----------------')
     datapro = data_process()
     datapro.test_flag = False
-    # 读取3个接收机数据
     datapro.datapath = data_file_c
     x_train_c, y_train, x_val_c, y_val, x_test_c, y_test = datapro.readdata_2d()
     print("datasets load successfully! "+"train shape:"+str(len(x_train_c))+" test shep:" + str(len(x_test_c)))
