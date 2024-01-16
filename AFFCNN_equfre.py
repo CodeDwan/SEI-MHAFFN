@@ -297,7 +297,7 @@ if __name__ == "__main__":
     print('----------------Start Data Processing----------------')
     datapro = data_process()
     datapro.test_flag = False
-    # 读取3个接收机数据
+
     datapro.datapath = data_file_c
     x_train_c, y_train, x_val_c, y_val, x_test_c, y_test = datapro.readdata_2d()
     print("datasets load successfully! "+"train shape:"+str(len(x_train_c))+" test shep:" + str(len(x_test_c)))
