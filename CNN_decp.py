@@ -103,7 +103,7 @@ def train_one_epoch(model, optimizer, loss_fn, training_loader, report_n):
     # index and do some intra-epoch reporting
     for i, (x_a, x_b, x_c, y) in enumerate(training_loader):
         # Every data instance is an input + label pair
-        input_a, input_b, input_c, labels = x_a, x_b, x_c, y     #xb:32x2x30720, yb:32x10
+        input_a, input_b, input_c, labels = x_a, x_b, x_c, y   
         labels = labels.long().view(-1)     #转换为维度为1的long类型
         # 使用GPU进行训练
         input_a = input_a.to(device)
@@ -142,13 +142,12 @@ def train_one_epoch(model, optimizer, loss_fn, training_loader, report_n):
 if __name__ == "__main__":
     # path settings + parameter settings
 
-    data_file_b = "../Datasets/XSRPdata/XSRPdata_PARA/rx_decp_data_b_14.mat"  # 数据路径
+    data_file_b = "../Datasets/...mat"  # 数据路径
 
-    model_path = './Modelsave/CNN_decp.pth'  # 模型保存path
-    pic_path = './Modelsave/figure/CNN_decp.jpg' # 图片保存路径
-    tsne_path = './Modelsave/figure/CNN_decp_tsne.jpg'
+    model_path = './Modelsave/...pth'  # 模型保存path
+    pic_path = './Modelsave/figure/...jpg' # 图片保存路径
+    tsne_path = './Modelsave/figure/...jpg'
     bsize = 32     # batch_size
-    # report_n = 4000*0.8*0.8/bsize/5     # 训练x个batch后汇报一次
     report_n = 30
     EPOCHS = 200
     numclass = 14
@@ -158,7 +157,7 @@ if __name__ == "__main__":
     print('----------------Start Data Processing----------------')
     datapro = data_process()
     datapro.test_flag = False
-    # 读取3个接收机数据
+
     datapro.datapath = data_file_b
     x_train_b, y_train, x_val_b, y_val, x_test_b, y_test = datapro.readdata_2d()
     print("datasets load successfully! "+"train shape:"+str(len(x_train_b))+" test shep:" + str(len(x_test_b)))
